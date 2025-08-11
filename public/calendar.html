@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- <div style="position: relative; width: 100%; margin-top: 8rem; overflow: hidden; overflow-y: scroll; margin-bottom: 40px;">
+        <div style="height: 40px; background-color: azure; margin-left: 10px; margin-right: 10px; display: grid; grid-template-columns: repeat(3, 1fr);">
+            <button style="color: white; background-color: gold; border: none;" onclick="previous()">
+                ‹
+            </button>
+            <h3 id="monthAndYear" style="color: black;"></h3>
+            <button style="color: white; background-color: gold; border: none;" onclick="next()">
+                ›
+            </button>
+        </div>
+    </div> -->
+    <!-- Main wrapper for the calendar application -->
+    <div class="wrapper">
+        <div class="container-calendar">
+            <div id="right">
+
+                <div class="button-container-calendar">
+                    <button id="previous" class="material-icons" onclick="previous()">
+                        chevron_left
+                    </button>
+                    <h3 id="monthAndYear"></h3>
+                    <button id="next" class="material-icons" onclick="next()">
+                        chevron_right
+                    </button>
+                </div>
+                <table class="table-calendar" id="calendar" data-lang="en">
+                    <thead id="thead-month"></thead>
+                    <tbody id="calendar-body"></tbody>
+                </table>
+                <div class="footer-container-calendar" style="margin-top: 40px;">
+                    <label for="month">Book in &nbsp;&nbsp;</label>
+                    <select id="month" onchange="jump()"
+                        style="border: none; background-color: orangered; color: white;">
+                        <option value=0>Jan</option>
+                        <option value=1>Feb</option>
+                        <option value=2>Mar</option>
+                        <option value=3>Apr</option>
+                        <option value=4>May</option>
+                        <option value=5>Jun</option>
+                        <option value=6>Jul</option>
+                        <option value=7>Aug</option>
+                        <option value=8>Sep</option>
+                        <option value=9>Oct</option>
+                        <option value=10>Nov</option>
+                        <option value=11>Dec</option>
+                    </select>
+                    <select id="year" onchange="jump()"
+                        style="margin-top: 30px; border: none; background-color: orangered; color: white;"></select>
+                </div>
+            </div>
+            <input type="checkbox" style="position: relative; margin-top: 30px;" id="come-to-me" />
+            <label for="come-to-me" style="margin-left: 10px; margin-right: 30px; color: white; font-size: 20px;">Come
+                to me</label>
+            <div id="sel-date-container">
+                <span id="date-selelcted"></span>
+                <span id="selected-time" style="color: gold; font-size: 20px;"></span>
+            </div>
+            <form id="hours">
+                <div>
+                    <input type="radio" name="time" class="time" id="7:00" value="7:00 am" />
+                    <label for="7:00">&nbsp;&nbsp;7:00 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="7:30" value="7:30 am" />
+                    <label for="7:30">&nbsp;&nbsp;7:30 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="8:00" value="8:00 am" />
+                    <label for="8:00">&nbsp;&nbsp;8:00 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="8:30" value="8:30 am" />
+                    <label for="8:30">&nbsp;&nbsp;8:30 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="9:00" value="9:00 am" />
+                    <label for="9:00">&nbsp;&nbsp;9:00 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="9:30" value="9:30 am" />
+                    <label for="9:30">&nbsp;&nbsp;9:30 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="10:00" value="10:00 am" />
+                    <label for="10:00">&nbsp;&nbsp;10:00 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="10:30" value="10:30 am" />
+                    <label for="10:30">&nbsp;&nbsp;10:30 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="11:00" value="11:00 am" />
+                    <label for="11:00">&nbsp;&nbsp;11:00 am</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="12:00" value="12:00 pm" />
+                    <label for="12:00">&nbsp;&nbsp;12:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="12:30" value="12:30 pm" />
+                    <label for="12:30">&nbsp;&nbsp;12:30 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="1:00" value="1:00 pm" />
+                    <label for="1:00">&nbsp;&nbsp;1:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="1:30" value="1:30 pm" />
+                    <label for="1:30">&nbsp;&nbsp;1:30 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="2:00" value="2:00 pm" />
+                    <label for="2:00">&nbsp;&nbsp;2:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="2:30" value="2:30 pm" />
+                    <label for="2:30">&nbsp;&nbsp;2:30 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="3:00" value="3:00 pm" />
+                    <label for="3:00">&nbsp;&nbsp;3:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="3:30" value="3:30 pm" />
+                    <label for="3:30">&nbsp;&nbsp;3:30 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="4:00" value="4:00 pm" />
+                    <label for="4:00">&nbsp;&nbsp;4:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="4:30" value="4:30 pm" />
+                    <label for="4:30">&nbsp;&nbsp;4:30 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="5:00" value="5:00 pm" />
+                    <label for="5:00">&nbsp;&nbsp;5:00 pm</label>
+                </div>
+
+                <div style="margin-top: 30px;">
+                    <input type="radio" name="time" class="time" id="5:30" value="5:30 pm" />
+                    <label for="5:30">&nbsp;&nbsp;5:30 pm</label>
+                </div>
+            </form>
+            <div style="width: 100%; height: 100px;"></div>
+            <!-- <div id="left" style="position: relative;">
+                <div id="event-section">
+                    <h3>Add Event</h3>
+                    <input type="date" id="eventDate">
+                    <input type="text" id="eventTitle" placeholder="Event Title">
+                    <input type="text" id="eventDescription" placeholder="Event Description">
+                    <button id="addEvent" onclick="addEvent()">
+                        Add
+                    </button>
+                </div>
+                <div id="reminder-section">
+                    <h3>Reminders</h3>
+                    <ul id="reminderList">
+                        <li data-event-id="1">
+                            <strong>Event Title</strong>
+                            - Event Description on Event Date
+                            <button class="delete-event" onclick="deleteEvent(1)">
+                                Delete
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <div style="width: 100%; height: 70px; background-color: rgb(0, 0, 0); position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <h2 id="bhub-title"
+            style="display: inline-block; color: white; margin-top: 24px; margin-left: 70px; margin-right: 47px; font-weight: 200; font-size: 19px;">
+            Choose date and time</h2>
+    </div>
+    <input type="submit" value="CONTINUE TO CHECKOUT" id="btn-save-date" />
+    <!-- Include the JavaScript file for the calendar functionality -->
+    <script src="js/index.js"></script>
+    <script>
+        let output = "";
+        let userId = "";
+        let takePlaceAt = "I will be there";
+        let db = firebase.firestore();
+        let form = document.getElementById("hours");
+        let selectedTime = document.getElementById('selected-time');
+        let btnSave = document.getElementById('btn-save-date');
+        let selectedDate = document.getElementById('date-selelcted');
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                userId = user.uid;
+                // startTimer();
+            }
+        });
+
+        form.addEventListener(
+            "click",
+            (event) => {
+                let position = event.target;
+                if (position.classList.contains('time')) {
+                    output = position.value;
+                    btnSave.style.display = "block";
+                    selectedTime.innerHTML = `,&nbsp${output}`;
+                    console.log(output);
+                }
+            }
+        );
+
+        document.getElementById('come-to-me').addEventListener('change', function () {
+            if (this.checked) {
+                takePlaceAt = "Come to me";
+                console.log(takePlaceAt);
+            } else {
+                takePlaceAt = "I will be there";
+                console.log(takePlaceAt);
+            }
+        });
+
+        btnSave.addEventListener('click', (e) => {
+            db.collection("BHub").doc(userId).get().then(function (it) {
+                if (it.data() != null && it.data().name != null) {
+                    let selectedTime = document.getElementById('selected-time').innerHTML;
+                    let selectedDate = document.getElementById('date-selelcted').innerHTML;
+
+                    if (selectedTime != "") {
+                        localStorage.setItem("date", selectedDate);
+                        localStorage.setItem("time", output);
+                        localStorage.setItem("job_at", takePlaceAt);
+                        open("checkout.html", "_self");
+                    }
+                } else {
+                    open("bookinginfo.html");
+                }
+            });
+        });
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            close();
+        });
+    </script>
+
+</body>
+
+</html>

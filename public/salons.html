@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body style="background-color: black;">
+    <div id="vendor-container-view">
+
+    </div>
+    <div style="width: 100%; position: relative; top: 60px;">
+        <h1 style="width: 100%; text-align: center; color: white; margin-top: 70px;">Let's do it together</h1>
+        <div style="width: 100%; position: relative; text-align: center; margin-top: 60px;">
+            <div onclick="openRegister()">
+                <img style="width: 200px; height: 200px; border: 2px solid orangered; border-radius: 50%;" src="images/b_hub_logo.png" />
+                <p style="position: relative; text-align: center; color: white; font-size: 24px;">Become a Beautician</p>
+                <p style="position: relative; text-align: center; color: white; font-size: 15px; padding-left: 20px; padding-right: 20px;">Enjoy flexibility, freedom and competitive earnings by working with BHub.</p>
+                <button style="width: 200px; height: 50px; position: relative; font-weight: 600; font-size: 20px; color: black; background-color: gold; margin-top: 10px; border: none; border-radius: 8px;">Register here</button>
+            </div>
+            <div style="margin-top: 100px;" onclick="openRegister()">
+                <img style="width: 200px; height: 200px; border: 2px solid gold; border-radius: 50%;" src="images/b_hub_logo.png" />
+                <p style="position: relative; text-align: center; color: white; font-size: 24px;">Become a Partner</p>
+                <p style="position: relative; text-align: center; color: white; font-size: 15px; padding-left: 20px; padding-right: 20px;">Grow with BHub! Our technology and user base can help you boost sales and unlock new opportunities!</p>
+                <button style="width: 200px; height: 50px; position: relative; font-weight: 600; font-size: 20px; color: black; background-color: gold; margin-top: 10px; border: none; border-radius: 8px;">Register here</button>
+            </div>
+            <div style="margin-top: 100px;" onclick="openRegister()">
+                <img style="width: 200px; height: 200px; border: 2px solid cyan; border-radius: 50%;" src="images/b_hub_logo.png" />
+                <p style="position: relative; text-align: center; color: white; font-size: 24px;">Become a Gym Trainer</p>
+                <p style="position: relative; text-align: center; color: white; font-size: 15px; padding-left: 20px; padding-right: 20px;">Tell BHub more about your business we are here for you!</p>
+                <button style="width: 200px; height: 50px; position: relative; font-weight: 600; font-size: 20px; color: black; background-color: gold; margin-top: 10px; border: none; border-radius: 8px;">Register here</button>
+            </div>   
+        </div>
+        <div style="position: relative; width: 100%; margin-top: 100px; padding-top: 30px; background-color: rgb(19, 19, 19)">
+            <li style="position: relative; margin-top: 40px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Links of interest</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAbout()">About us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAPrivacy()">Privacy Policy</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openTerms()">Terms & Conditions</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAContact()">Contact us</li>
+            <li style="position: relative; margin-top: 70px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Follow us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Facebook</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Twitter</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Instagram</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openLinkedIn()">Linked In</li>
+            <div style="width: 100%; position: relative; margin-top: 30px; display: flex; align-items: center; justify-content: center;">
+                <img style="width: 150px; height: 50px;" src="images/App-store-Icon.png" />
+                <img style="width: 150px; height: 50px;" src="images/Play-store-Icon.png" />
+            </div>
+        </div>
+        <div style="height: 100px; background-color: rgb(19, 19, 19)">
+            
+        </div>
+    </div>
+    <div style="width: 100%; height: 130px; background-color: black; position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <h2 style="display: inline-block; color: white; margin-left: 90px; margin-right: 47px; font-size: 24px;">
+            Salons</h2>
+        <div
+            style="position: absolute; height: 50px; top: 2.3; left: 10px; right: 10px; align-items: start; justify-content: left; display: flex; color: white; border: 1px solid darkgray; border-radius: 4px; background-color: rgb(26, 25, 25);">
+            <span id="search-icon" class="material-symbols-outlined">search</span>
+            <input type="text"
+                style="width: 100%; height: 50px; padding-left: 3.3rem; font-family: 'Lexend', sans-serif; background-color: transparent; border: 0px solid transparent; font-size: 20px; color: white;"
+                placeholder="Search salon here ..." />
+        </div>
+    </div>
+    <script src="js/index.js"></script>
+    <script>
+        let db = firebase.firestore();
+
+        var timer;
+        let uid = "";
+        let products = [];
+        let isFavorite = "";
+
+        function openAbout() {
+            open("aboutus.html");
+        }
+
+        function openAPrivacy() {
+            open("privacy.html");
+        }
+
+        function openTerms() {
+            open("terms.html");
+        }
+
+        function openAContact() {
+            open("contactus.html");
+        }
+
+        function openRegister() {
+            open("landing.html");
+        }
+
+        function openLinkedIn() {
+            open("https://www.linkedin.com/company/bhubapp/");
+        }
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                uid = user.uid;
+                // startTimer();
+            }
+        });
+
+        function startTimer() {
+            timer = setInterval(function () {
+                initDb();
+            }, 1000);
+        }
+
+        let favorites = [];
+        let listProducts = document.querySelector("#vendor-container-view");
+        listProducts.addEventListener('click', (event) => {
+            var positionClick = event.target;
+
+            console.log(positionClick);
+
+            if (positionClick.classList.contains('img-poster')) {
+                var salon_id = positionClick.parentElement.classList.value;
+                localStorage.setItem("salon_id", salon_id);
+                open("bhub.html", "_self");
+            }
+
+            if (positionClick.classList.contains('poster-shadow')) {
+                var salon_id = positionClick.parentElement.classList.value;
+                localStorage.setItem("salon_id", salon_id);
+                open("bhub.html", "_self");
+            }
+
+            if (positionClick.classList.contains('view-more-box')) {
+                var salon_id = positionClick.parentElement.classList.value;
+                localStorage.setItem("salon_id", salon_id);
+                open("bhub.html", "_self");
+            }
+
+            var salonName = "";
+            if (positionClick.classList.contains('material-symbols-outlined')) {
+                // startTimer();
+                positionClick.classList.remove("material-symbols-outlined");
+                positionClick.classList.add("material-icons");
+                // var favClass = positionClick.classList.value;
+                var salon_id = positionClick.parentElement.classList.value;
+
+                db.collection("BHub").doc(salon_id).get().then((snap) => {
+                    if (snap.data() !== null) {
+                        var fav = snap.data().favClass;
+                        var location = snap.data().location;
+                        let name = snap.data().name;
+                        salonName = snap.data().name;
+                        var poster = snap.data().poster;
+                        var fav = document.getElementById(positionClick.parentElement.id);
+                        localStorage.setItem("salon_name", name);
+
+                        db.collection("Favorite").doc(uid).collection("Salons").doc(name).get().then((it) => {
+                            if (it.data() == null) {
+                                let map = {
+                                    name: name,
+                                    userID: uid,
+                                    location: location,
+                                    poster: poster,
+                                    vendorID: salon_id
+                                }
+
+                                db.collection("Favorite").doc(uid).collection("Salons").doc(name).set(map).then(function() {
+                                    salonName = "";
+                                });
+                            }
+                        });
+                    }
+                });
+            } else if (positionClick.classList.contains("material-icons")) {
+                positionClick.classList.remove("material-icons");
+                positionClick.classList.add("material-symbols-outlined");
+
+                salonName = localStorage.getItem("salon_name");
+                console.log(salonName);
+                
+                db.collection("Favorite").doc(uid).collection("Salons").doc(salonName).delete().then(function () {
+                    salonName = localStorage.getItem("salon_name");
+                });
+            }
+        });
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            window.open("welcome.html", "_self");
+        });
+
+        const initDb = () => {
+            let salon = "";
+            db.collection("BHub").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    var role = doc.data().role;
+                    if (role === "salon") {
+                        products.push({ ...doc.data() });
+
+                        salon +=
+                            `<div id="item-list-row" class="${doc.data().userID}">
+                        <img id="img-poster" class="img-poster" src="${doc.data().poster}" />
+                        <div id="poster-shadow" class="poster-shadow"></div>
+                        <div id="name-fav-box" class="name-fav-box">
+                        <span id="salon-name">${doc.data().name}</span>
+                        <div id="favo" class="${doc.data().userID}"><i data-id="${doc.data().userID}" class="material-symbols-outlined">favorite</i></div>
+                        </div>
+                        <div id="location-bx">
+                            <i class="fa fa-map-marker" id="location-icon"></i>
+                            <span id="salon-place">${doc.data().location}</span>
+                            <li style="position: absolute; font-size: 22px; color: red; right: 20px;" class="material-symbols-outlined">pin_drop</li>
+                        </div>
+                        <div id="name-rating-box">
+                            <i class="fa fa-star" id="rating-star"></i>
+                            <span id="rating-number">0.0</span>
+                            <span id="reviews">0 reviews</span>
+                            </div>
+                        <div id="item-row-line"></div>
+                        <div id="view-more-box" class="view-more-box">
+                            <span id="view-more">View more</span>
+                            <i class="material-symbols-outlined" id="arrow-forward">arrow_forward_ios</i>
+                            </div>
+                        <label id="user-id" class="user-id">${doc.data().userID}</label>
+                        </div>`;
+                    }
+                });
+                document.getElementById('vendor-container-view').innerHTML = salon;
+
+                // console.log(products);
+                localStorage.setItem("product", JSON.stringify(products));
+
+                let favoriteFilms = JSON.parse(localStorage.getItem("product"));
+                console.log(favoriteFilms);
+                let favoriteFilmsID = `${favoriteFilms.userID} ${favoriteFilms.fav}`;
+                // console.log(favoriteFilmsID);
+                // favoriteFilmsID.indexOf(item.imdbID) === -1 ? "" : "favorite"
+            });
+        }
+        initDb();
+    </script>
+</body>
+
+</html>

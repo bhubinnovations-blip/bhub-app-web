@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="position: relative; margin-top: 70px; margin-left: 0px; margin-right: 0px;">
+        <p
+            style="position: relative; text-align: center; background-color: rgb(44, 40, 17); color: rgb(206, 203, 203); font-size: 12px; font-weight: 100; padding: 20px;">
+            Order delivery process due to vendor's time, once order delays you may contact vendor, for more details
+        </p>
+        <p style="position: relative; color: white; font-size: 17px; margin-left: 20px;">Order status</p>
+    </div>
+    <div
+        style="height: 20px; position: relative; display: flex; margin-top: 30px; margin-left: 20px; margin-left: 20px;">
+        <div style="width: 20px; height: 20px; display: inline-block; border-radius: 50%; background-color: orangered;">
+        </div>
+        <span
+            style="display: inline-block; color: orangered; font-size: 12px; font-weight: 100; top: 4px; margin-left: 20px;">Your
+            order is being sent to vendor</span>
+    </div>
+    <div style="width: 2px; height: 80px; margin-left: 29px; background-color: orangered;"></div>
+    <div style="height: 20px; position: relative; display: flex; margin-left: 20px; margin-left: 20px;">
+        <div id="order-confirm-dot"></div>
+        <span id="order-confirm-txt">Order is being confirmed</span>
+    </div>
+    <div id="order-confirm-line"></div>
+    <div style="height: 20px; position: relative; display: flex; margin-left: 20px; margin-left: 20px;">
+        <div id="order-work-dot"></div>
+        <span id="order-work-txt">Work in progress</span>
+    </div>
+    <div id="order-work-line"></div>
+    <div style="height: 20px; position: relative; display: flex; margin-left: 20px; margin-left: 20px;">
+        <div id="order-ends-dot"></div>
+        <span id="order-ends-txt">Job ended</span>
+    </div>
+    <p id="contact-vendor-btn"
+        style="position: relative; margin-top: 30px; margin-left: 10px; margin-right: 20px; color: white; text-align: center;">
+        Order delayed?&nbsp;<strong style="color: gold;">Contact vendor</strong></p>
+    <div style="width: 100%; height: 70px; background-color: rgb(0, 0, 0); position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <div style="display: inline-block; margin-left: 6rem; height: 100%;">
+            <li style="color: white; margin-top: 16px; font-weight: 100; font-size: 12px; list-style-type: none;">BHub
+            </li>
+            <li id="status-vendor-title">Vendor</li>
+        </div>
+    </div>
+    <input type="submit" value="CANCEL BOOKING" id="btn-check-out" />
+    <dialog id="alert-dialog">
+        <div style="height: 100%;">
+            <li style="position: relative; list-style-type: none; font-size: 17px; font-weight: 700;">Alert!</li>
+            <li id="dlg-text">Are you sure you want to cancel this booking?</li>
+            <div style="position: relative; margin-top: 20px; align-items: end; justify-content: end; display: flex;">
+                <li id="dialog-no-btn">NO</li>
+                <li id="dialog-yes-btn">YES</li>
+            </div>
+        </div>
+    </dialog>
+    <script src="js/index.js"></script>
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDocs, collection, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let timer;
+        let userId = "";
+        let vendorID = localStorage.getItem("salon_id");
+        let salonName = localStorage.getItem("salon_name");
+        let alertDlg = document.getElementById('alert-dialog');
+
+        var userName = "";
+        var vendorItem = "";
+        var vendorName = "";
+        var currency = "UGX";
+        var subTotal = 0;
+
+        let count = 0;
+        var totalPrice = 0;
+        var cartItemRow = "";
+        var countryCode = "";
+        var phoneNo = "";
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                userId = user.uid;
+                console.log(userId);
+                getVendorInfo(vendorID);
+                startTimer(userId);
+            }
+        });
+
+        function startTimer(userId) {
+            timer = setInterval(function () {
+                checkOrder(userId);
+            }, 1000);
+        }
+
+        async function getVendorInfo(vUid) {
+
+            var db = firebase.firestore();
+            db.collection("BHub").doc(vUid).get().then((doc) => {
+                if (doc.data() != null) {
+                    phoneNo = doc.data().phoneNumber;
+                    console.log("Salon Phone: " + phoneNo);
+                }
+            });
+        }
+
+        document.getElementById('status-vendor-title').innerHTML = salonName;
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            var salonOpt = localStorage.getItem("salon_opt");
+            if (salonOpt === "salon") {
+                open("salons.html", "_self");
+            } else if (salonOpt === "beauty") {
+                window.open("beauticians.html", "_self");
+            } else if (salonOpt === "gym") {
+                window.open("gyms.html", "_self");
+            } else if (salonOpt === "trainer") {
+                window.open("trainers.html", "_self");
+            } else {
+                window.open("welcome.html", "_self");
+            }
+        });
+
+        document.getElementById('btn-check-out').addEventListener('click', (e) => {
+            alertDlg.showModal();
+        });
+
+        document.getElementById('dialog-yes-btn').addEventListener('click', (e) => {
+            cancelBooking();
+        });
+
+        document.getElementById('contact-vendor-btn').addEventListener('click', (e) => {
+            window.open('tel:' + phoneNo, '_self');
+        });
+
+        document.getElementById('dialog-no-btn').addEventListener('click', (e) => {
+            closeDlg();
+        });
+
+        async function checkOrder(uid) {
+            const userRef = doc(db, "New Orders", uid);
+            const userData = await getDoc(userRef);
+            if (userData.exists()) {
+
+                var order = userData.data().order;
+                if (order == "preparing") {
+
+                    document.getElementById('order-confirm-dot').style.backgroundColor = "orangered";
+                    document.getElementById('order-confirm-txt').style.color = "orangered";
+                    document.getElementById('order-confirm-line').style.backgroundColor = "orangered";
+                    document.getElementById('btn-check-out').style.display = "none";
+                } else if (order == "delivering") {
+
+                    document.getElementById('order-confirm-dot').style.backgroundColor = "orangered";
+                    document.getElementById('order-confirm-txt').style.color = "orangered";
+                    document.getElementById('order-confirm-line').style.backgroundColor = "orangered";
+                    document.getElementById('order-work-dot').style.backgroundColor = "orangered";
+                    document.getElementById('order-work-line').style.backgroundColor = "orangered";
+                    document.getElementById('order-work-txt').style.color = "orangered";
+                    document.getElementById('btn-check-out').style.display = "none";
+                } else if (order == "received") {
+                    localStorage.setItem("salon_id", vendorID);
+                    localStorage.setItem("salon_name", salonName);
+                    open("payment.html", "_self");
+                }
+            }
+        }
+
+        function cancelBooking() {
+            let db = firebase.firestore();
+            let map = {
+                order: "cancelled",
+            }
+            db.collection("New Orders").doc(userId).update(map).then((e) => {
+                db.collection("BHub").doc(userId).collection("Booking").get().then(function (snapshot) {
+                    snapshot.forEach((doc) => {
+                        let id = doc.id;
+                        db.collection("BHub").doc(userId).collection("Booking")
+                            .doc(id).delete().then((e) => {
+                                var salonOpt = localStorage.getItem("salon_opt");
+                                if (salonOpt === "salon") {
+                                    open("salons.html", "_self");
+                                } else if (salonOpt === "beauty") {
+                                    window.open("beauticians.html", "_self");
+                                } else if (salonOpt === "gym") {
+                                    window.open("gyms.html", "_self");
+                                } else if (salonOpt === "trainer") {
+                                    window.open("trainers.html", "_self");
+                                } else {
+                                    window.open("welcom.html", "_self");
+                                }
+                            });
+                    });
+                });
+            });
+        }
+
+        function closeDlg() {
+            alertDlg.close();
+        }
+    </script>
+</body>
+
+</html>

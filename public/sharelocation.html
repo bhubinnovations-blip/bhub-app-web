@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(6px); -webkit-filter: blur(6px);" src="images/b_hub_logo.png" />
+        <h1
+            style="position: absolute; color: white; top: 50px; left: 20px; right: 40px; font-size: 24px;">
+            Find the best B-Hub services in your area</h1>
+        <div
+            style="width: 100%; height: 340px; position: absolute; border-top-right-radius: 270px 150px; background-color: white; bottom: 0%;">
+            <span
+                style="position: absolute; top: 100px; left: 40px; right: 45px; text-align: left; font-size: 16px;">Share
+                your location with us to help find you nearest salon, beautician and gym/trainer</span>
+            <span id="continue-btn" onclick="enableLocation()">Share location</span>
+        </div>
+    </div>
+    <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+    <script src="js/index.js"></script>
+    <script>
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            window.close();
+        });
+
+        async function enableLocation() {
+            firebase.auth().onAuthStateChanged(function (user) {
+                if (user) {
+                    var latitude = 0;
+                    var longitude = 0;
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(function (position) {
+                            latitude = position.coords.latitude;
+                            longitude = position.coords.longitude;
+                            console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+
+                            var API_KEY_BHUB = "AIzaSyAcjDk14VvIuVQeFxNbxmrrLWTXPRr0Fw0";
+
+                            fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${API_KEY_BHUB}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const placeName = data.results[0].formatted_address;
+                                    console.log(placeName);
+                                    var userId = user.uid;
+                                    var map = {
+                                        deliverTo: placeName,
+                                        lat: `${latitude}`,
+                                        lng: `${longitude}`
+                                    }
+                                    var db = firebase.firestore();
+                                    db.collection("BHub").doc(userId).update(map).then(function (e) {
+                                        window.close();
+                                        window.open("welcome.html");
+                                    });
+                                }).catch(error => console.error('Error: ', error));
+                        });
+                    } else {
+                        console.log("Geolocation is not supported by this browser,");
+                    }
+                } else {
+                    window.open("login.html", "_self");
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

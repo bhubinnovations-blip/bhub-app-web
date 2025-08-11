@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>B-Hub</title>
+        <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+        <link rel="stylesheet" href="css/bhub.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+        <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div style="position: relative; width: 100%; margin-top: 2rem; overflow: hidden; overflow-y: scroll; margin-bottom: 40px;">
+            <h2
+            style="position: relative; color: white; top: 10px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Notifications</h2>
+        <p
+            style="position: relative; margin-top: 70px; margin-left: 20px; margin-right: 50px; text-align: center; font-size: 15px; color: white;">
+            All your notifications will show up here </p>
+
+        <p
+            style="position: relative; margin-top: 20px; margin-left: 20px; margin-right: 20px; text-align: center; font-weight: 700; font-size: 15px; color: rgb(94, 92, 92);">
+            No notifications for now</p>
+        </div>
+        <div style="width: 100%; height: 60px; background-color: black; position: fixed; top: 0%;">
+            <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        </div>
+        <script src="js/index.js"></script>
+        <script>
+            document.getElementById('close-window-btn').addEventListener('click', (e) => {
+                close();
+            });
+        </script>
+    </body>
+</html>

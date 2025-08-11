@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(7px); -webkit-filter: blur(7px);" src="images/b_hub_logo.png" />
+    </div>
+    <div
+        style="width: 100%; height: 100%; position: fixed; background-image: linear-gradient(to bottom, #000000cc, black);">
+    </div>
+    <div style="width: 100%; overflow: hidden; overflow-y: scroll;">
+        <h2
+            style="position: relative; color: white; top: 60px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Register with BHub</h2>
+        <p
+            style="position: relative; margin-top: 80px; margin-left: 20px; margin-right: 50px; font-size: 15px; color: white;">
+            Create your account to help us publish your business to customer, registration is free</p>
+        <p
+            style="position: relative; margin-top: 30px; margin-left: 20px; font-weight: 700; font-size: 15px; color: rgb(196, 194, 194);">
+            Enter your business details*</p>
+        <div style="position: relative;  margin-top: 10px; margin-left: 20px; margin-right: 20px;">
+            <input type="email" placeholder="Email ID here ..." id="input-email" />
+        </div>
+        <div style="position: relative;  margin-top: 80px; margin-left: 20px; margin-right: 20px;">
+            <input type="password" placeholder="Password here ..." id="input-pass" />
+        </div>
+        <div
+            style="position: relative;  margin-top: 145px; margin-left: 20px; margin-right: 20px; align-items: start; justify-content: left; display: flex;">
+            <input type="checkbox" id="pass" style="color: white; cursor: pointer; width: 20px; height: 20px;"
+                onclick="showPassword()"><label for="pass" style="color: white; margin-top: 5px; margin-left: 7px;"> Show
+                password</label>
+        </div>
+        <div style="position: relative;  margin-top: 30px; margin-left: 20px; margin-right: 20px;">
+            <input type="number" placeholder="Phone number here ..." id="input-phone-no" />
+        </div>
+        <div style="position: relative;  margin-top: 120px; margin-left: 20px; margin-right: 20px;">
+            <span id="submit-btn">Continue</span>
+        </div>
+    </div>
+    <div
+        style="width: 100%; height: 80px; position: fixed; align-items: center; justify-content: center; display: flex; background-color: transparent; bottom: 0%;">
+        <span id="already-btn">Already have an account? Login</span>
+    </div>
+    <div style="width: 100%; height: 60px; background-color: black; position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <span style="position: absolute; top: 25px; right: 20px; color: white; cursor: pointer;" onclick="openPrivacy()">PRIVACY</span>
+    </div>
+    <dialog id="alert-dialog">
+        <div style="height: 100%;">
+            <li style="position: relative; list-style-type: none; font-size: 17px; font-weight: 700;">Alert!</li>
+            <li id="dlg-text">Email ID,
+                Password and Phone number are required!</li>
+            <div style="position: relative; margin-top: 20px; align-items: end; justify-content: end; display: flex;">
+                <li id="dialog-yes-btn" onclick="closeDlg()">OK</li>
+            </div>
+        </div>
+    </dialog>
+    <script src="js/index.js"></script>
+    <script>
+        let alertDlg = document.getElementById('alert-dialog');
+        function showPassword() {
+            var x = document.getElementById("input-pass");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+
+        function closeDlg() {
+            alertDlg.close();
+        }
+
+        const openPrivacy = () => {
+            open("privacy.html");
+        }
+    </script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { createUserWithEmailAndPassword, getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseApp = initializeApp(firebaseConfig);
+        const firebaseAuth = getAuth(firebaseApp);
+        const db = getFirestore(firebaseApp)
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            window.close();
+        });
+
+        function saveData() {
+            let emailId = document.getElementById('input-email').value;
+            let passWord = document.getElementById('input-pass').value;
+            let phoneNumber = document.getElementById('input-phone-no').value;
+
+            if (emailId != "" && passWord != "" && phoneNumber != "") {
+            
+                createUserWithEmailAndPassword(firebaseAuth, emailId, passWord)
+                    .then(userCred => {
+
+                        var userId = userCred.user?.uid;
+                        var email = userCred.user?.email;
+
+                        var map = {
+                            email: email,
+                            userID: userId,
+                            phoneNumber: phoneNumber,
+                            role: "trainer",
+                            favClass: "fav fa fa-heart-o"
+                        }
+                        setDoc(doc(db, "BHub", userId), map)
+                            .then(function (e) {
+                                window.close();
+                                window.open("trainername.html");
+                                console.log(userId, email);
+                            });
+                    }).catch((error) => {
+                        var errorMessage = "Something went wrong or invalid email address / password!";
+                        dlgText.innerHTML = errorMessage;
+                        alertDlg.showModal();
+                    });
+            } else {
+                alertDlg.showModal();
+            }
+        }
+
+        document.getElementById('already-btn').addEventListener('click', (e) => {
+            open("login.html", "_self");
+        });
+
+        document.getElementById('submit-btn').addEventListener('click', (e) => {
+            saveData();
+        });
+    </script>
+</body>
+
+</html>

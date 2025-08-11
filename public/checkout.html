@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="width: 100%; position: absolute; top: 70px; overflow: scroll; overflow-y: hidden;">
+        <span id="schedule-title">Schedule</span>
+        <div id="book-schedule">
+            <span id="book-time">00:00 am</span>
+            <div id="book-strok"></div>
+            <div id="book-div">
+                <span id="book-date">Day 0</span>
+                <li id="book-period">Loading ...</li>
+            </div>
+        </div>
+        <!-- <p id="order-title" style="display: block;">Order</p>
+        <div id="book-schedule-order">
+            <div id="book-order">
+                <li id="book-name">Hair Extension - Full Tape in</li>
+                <li id="book-worker">First available employee</li>
+                <span id="book-price" style="margin-right: 20px;">Ugx 80,000</span>
+                <span class="material-icons"
+                    style="position: absolute; top: 0px; right: 2.5rem; color: gold;">remove_circle</span>
+            </div>
+        </div> -->
+        <!-- <p id="prod-title" style="display: block;">Products</p>
+        <div id="book-schedule-prod">
+            <div id="prod-item">
+                <li id="prod-name">Vaseline BLUESEAL</li>
+                <li id="prod-qty">95ml</li>
+                <li id="prod-price">Ugx 20,000</li>
+                <span class="material-icons"
+                    style="position: absolute; bottom: 2px; right: 7rem; color: gold;">remove_circle</span>
+                <li id="qty"
+                    style="position: absolute; list-style-type: none; bottom: 3px; right: 5.2rem; color: white;">1</li>
+                <span class="material-icons"
+                    style="position: absolute; bottom: 2px; right: 2.5rem; color: gold;">add_circle</span>
+            </div>
+        </div> -->
+        <p id="details-title">My Details</p>
+        <div id="book-schedule-title">
+            <li id="detail-email-title">Email</li>
+            <li id="detail-email">Loading ...</li>
+            <li id="detail-name-title">Full Name</li>
+            <li id="detail-name">Loading ...</li>
+            <li id="detail-phone-title">Phone number</li>
+            <li id="detail-phone">Loading ...</li>
+            <li id="detail-phone-title">Deliver to</li>
+            <div style="position: relative; display: flex; align-items: center; justify-content: space-between;">
+                <li id="detail-place">Loading ...</li>
+                <span id="edit-place" style="color: orange; position: absolute; right: 2rem;"
+                    class="material-icons">chevron_right</span>
+            </div>
+        </div>
+        <div id="book-schedule">
+            <span id="payment-title">PAYMENT METHOD</span>
+        </div>
+        <div
+            style="position: relative; margin-top: 30px; margin-left: 20px; margin-right: 20px; align-items: center; justify-content: space-between; display: flex;">
+            <span id="pay-at" style="color: white;">Pay at venue</span>
+            <li style="position: absolute; right: 0; list-style-type: none; color: white;" class="material-icons">
+                payments</li>
+        </div>
+
+        <div
+            style="position: relative; margin-top: 50px; margin-left: 20px; margin-right: 20px; align-items: center; justify-content: space-between; display: flex;">
+            <span style="color: white;">Sub Total</span>
+            <li id="sub-total">Ugx 0.00</li>
+        </div>
+
+        <div style="width: 100%; height: 150px;"></div>
+    </div>
+
+    <div style="width: 100%; height: 70px; background-color: rgb(0, 0, 0); position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <h2 id="bhub-title"
+            style="display: inline-block; color: white; margin-top: 24px; margin-left: 70px; margin-right: 47px; font-weight: 200; font-size: 19px;">
+            Booking</h2>
+    </div>
+    <input type="submit" value="CONFIRM BOOKING" id="btn-check-out" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+        let timer;
+        let price = 0;
+        let userId = "";
+        let db = firebase.firestore();
+        let time = localStorage.getItem("time");
+        let date = localStorage.getItem("date");
+        let takePlaceAt = localStorage.getItem("job_at");
+        let day = moment().format("ddd");
+        let deliverTo = "";
+        let profPic = "";
+
+        console.log(`${time} ${date}`);
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                userId = user.uid;
+                console.log(userId);
+                startTimer(userId);
+
+                db.collection("BHub").doc(userId).collection("Booking").get().then((snapshot) => {
+
+                    snapshot.forEach((doc) => {
+                        price += parseInt(doc.data().price);
+                    });
+                    document.getElementById('sub-total').innerHTML = "Ugx " + parseInt(price).toLocaleString();
+                });
+            }
+        });
+
+        function getBooking(uid) {
+            document.getElementById('book-time').innerHTML = time;
+            document.getElementById('book-date').innerHTML = date;
+            db.collection("BHub").doc(userId).get().then((it) => {
+                if (it.data() != null) {
+                    deliverTo = it.data().deliverTo;
+                    profPic = it.data().profilePic;
+                    document.getElementById('detail-email').innerHTML = it.data().email;
+                    document.getElementById('detail-name').innerHTML = it.data().fName + " " + it.data().lName;
+                    document.getElementById('detail-phone').innerHTML = it.data().phoneNumber;
+                    document.getElementById('detail-place').innerHTML = deliverTo;
+
+                    startTimer(deliverTo);
+
+                    document.getElementById('book-period').innerHTML = takePlaceAt;
+                    if (takePlaceAt === "Come to me") {
+                        document.getElementById("pay-at").innerHTML = "Pay with cash";
+                    }
+                }
+            });
+        }
+
+        function startTimer(area) {
+            timer = setInterval(function () {
+                getBooking(userId);
+            }, 1000);
+        }
+
+        document.getElementById('edit-place').addEventListener('click', (e) => {
+            localStorage.setItem("place_name", deliverTo);
+            open("places.html");
+        });
+
+        document.getElementById('detail-place').addEventListener('click', (e) => {
+            localStorage.setItem("place_name", deliverTo);
+            open("places.html");
+        });
+
+        function getOrders(uid) {
+            let orderItem = "";
+            let prodcutItem = "";
+            db.collection("BHub").doc(uid).collection("Booking").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    if (doc.data().period != null) {
+                        orderItem += `
+                <div id="book-order">
+                    <li id="book-name">${doc.data().name}</li>
+                    <li id="book-worker">${doc.data().period} Appointment</li>
+                    <span id="book-price" style="margin-right: 20px;">Ugx ${parseInt(doc.data().price).toLocaleString()}</span>
+                    <span class="material-icons"
+                    style="position: absolute; top: 0px; right: 2.5rem; color: gold;">remove_circle</span>
+                </div>
+               `;
+                        document.getElementById('order-title').style.display = "block";
+                    } else if (doc.data().qty != null) {
+                        prodcutItem += `
+                <div id="prod-item">
+                    <li id="prod-name">${doc.data().name}</li>
+                    <li id="prod-qty">${doc.data().qty}</li>
+                    <li id="prod-price">Ugx ${parseInt(doc.data().price).toLocaleString()}</li>
+                    <span class="material-icons" style="position: absolute; bottom: 2px; right: 7rem; color: gold;">remove_circle</span>
+                    <li id="qty" style="position: absolute; list-style-type: none; bottom: 3px; right: 5.2rem; color: white;">1</li>
+                    <span class="material-icons" style="position: absolute; bottom: 2px; right: 2.5rem; color: gold;">add_circle</span>
+                </div>
+                `;
+                        document.getElementById('prod-title').style.display = "block";
+                    }
+                });
+                document.getElementById('book-schedule-order').innerHTML = orderItem;
+                document.getElementById('book-schedule-prod').innerHTML = prodcutItem;
+            });
+        }
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            close();
+        });
+
+        document.getElementById('btn-check-out').addEventListener('click', (e) => {
+            let d = new Date()
+            let month = String(d.getMonth() + 1).padStart(2, '0');
+            let dateM = d.getDate() + " " + month + " " + d.getFullYear();
+            let timeM = moment().format('hh:mm a');
+
+            console.log(day);
+            let salonName = localStorage.getItem("salon_name");
+            let vendorID = localStorage.getItem("salon_id");
+            let email = document.getElementById('detail-email').innerHTML;
+            let fullName = document.getElementById('detail-name').innerHTML;
+            let phone = document.getElementById('detail-phone').innerHTML;
+            let schedule = document.getElementById('book-date').innerHTML;
+            localStorage.setItem("time", time);
+            localStorage.setItem("date", date);
+            localStorage.setItem('email', email);
+            localStorage.setItem("phone", phone);
+            localStorage.setItem("sub_total", price);
+            localStorage.setItem("full_name", fullName);
+            localStorage.setItem("salon_name", salonName);
+            localStorage.setItem("salon_id", vendorID);
+
+            let map = {
+                email: email,
+                orderDate: dateM,
+                phone: phone,
+                fullName: fullName,
+                order: "pending",
+                price: "" + price,
+                paymentType: "Cash",
+                orderTime: "Placed at: " + timeM,
+                userID: userId,
+                vendorID: vendorID,
+                vendorTitle: salonName,
+                schedule: schedule,
+                profilePic: profPic,
+                deliverTo: deliverTo,
+                scheduleTime: time,
+                takePlaceAt: takePlaceAt,
+            }
+            db.collection("New Orders").doc(userId).set(map).then((it) => {
+                open('orderstatus.html', "_self");
+            });
+        });
+    </script>
+</body>
+
+</html>

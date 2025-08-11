@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+</head>
+
+<body>
+    <div id="splash">
+        <img style="width: 130px; height: 200px;" src="images/b_hub_logo.png" />
+    </div>
+    <script src="js/index.js"></script>
+
+    <script>
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                const uid = user.uid;
+                console.log(uid);
+                firebase.firestore().collection("BHub").doc(uid).get().then((it) => {
+                    if (it.data() != null) {
+                        var role = it.data().role;
+                        if (role == "user") {
+                            if (it.data().deliverTo != null) {
+                                goHome();
+                            } else {
+                                window.close();
+                                window.open("country.html");
+                            }
+                        } else if(role == "salon") {
+                            if(it.data().name != null) {
+                                window.close();
+                                window.open("salon.html");
+                            } else {
+                                window.close();
+                                window.open("category.html");
+                            }
+                        } else if(role == "beauty") {
+                            if(it.data().name != null) {
+                                window.close();
+                                window.open("salon.html");
+                            } else {
+                                window.close();
+                                window.open("category.html");
+                            }
+                        } else if(role == "gym") {
+                            if(it.data().name != null) {
+                                window.close();
+                                window.open("gym.html");
+                            } else {
+                                window.close();
+                                window.open("gymname.html");
+                            }
+                        } else if(role == "trainer") {
+                            if(it.data().name != null) {
+                                window.close();
+                                window.open("gym.html");
+                            } else {
+                                window.close();
+                                window.open("trainername.html");
+                            }
+                        }
+                    } else {
+                        alert("You seem not registered on BHub.\n Please Register and/or use another account.");
+                        close();
+                    }
+                });
+            } else {
+                window.open("login.html", "_self");
+            }
+        });
+
+        function goHome() {
+            window.open("welcome.html", "_self");
+        }
+    </script>
+</body>
+
+</html>

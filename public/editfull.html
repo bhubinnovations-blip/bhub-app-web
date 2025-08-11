@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="width: 100%; height: 100%; position: absolute; overflow: hidden; overflow-y: scroll;">
+        <h2
+            style="position: relative; color: white; top: 40px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Edit service</h2>
+
+        <fieldset
+            style="position: relative; top: 50px; color: white; border-radius: 5px; margin-left: 20px; margin-right: 20px; font-size: 18px;">
+            <legend>Select service categories*</legend>
+
+            <div style="margin-top: 10px;">
+                <input type="radio" id="body-hair" name="service" value="body hair" />
+                <label for="body-hair">&nbsp;&nbsp;Body Hair</label>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <input type="radio" id="beard" name="service" value="beard" />
+                <label for="beard">&nbsp;&nbsp;Beard</label>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <input type="radio" id="hands-feet" name="service" value="hands and feet" />
+                <label for="hands-feet">&nbsp;&nbsp;Hands & Feet</label>
+            </div>
+            <div style="margin-top: 20px;">
+                <input type="radio" id="hair" name="service" value="hair" />
+                <label for="hair">&nbsp;&nbsp;Hair</label>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <input type="radio" id="face" name="service" value="face care" />
+                <label for="face">&nbsp;&nbsp;Face Care</label>
+            </div>
+
+            <div style="margin-top: 20px; margin-bottom: 10px;">
+                <input type="radio" id="massage" name="service" value="massage" />
+                <label for="massage">&nbsp;&nbsp;Massage</label>
+            </div>
+        </fieldset>
+
+        <div id="service-holder" style="top: 30px;">
+            <p id="svc-tool-tip">
+                full menu*
+            </p>
+            <div
+                style="position: relative;  margin-top: 10px; margin-left: 20px; align-items: start; justify-content: left; display: flex; margin-right: 20px;">
+                <input type="text" placeholder="Service name here ..." required id="input-svc-name" />
+            </div>
+            <div
+                style="position: relative;  margin-top: 10px; margin-left: 20px; align-items: start; justify-content: left; display: flex; margin-right: 20px;">
+                <input type="text" placeholder="Service period here eg. 20min ..." required id="input-svc-period" />
+            </div>
+            <div
+                style="position: relative;  margin-top: 10px; margin-left: 20px; align-items: start; justify-content: left; display: flex; margin-right: 20px;">
+                <input type="number" placeholder="Service fee here eg. 50000 ..." required id="input-svc-price" />
+            </div>
+            <div style="width: 100%; position: relative; display: flex; align-items: center; justify-content: center;">
+                <input type="button" id="save-pop-svc-btn" onclick="saveItem()" value="SAVE" />
+                <input type="button" id="save-pop-svc-btn" onclick="deleteItem()" value="DELETE" />
+            </div>
+            <div style="width: 100%; height: 100px;"></div>
+        </div>
+    </div>
+    <div style="width: 100%; height: 60px; background-color: black; position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+    </div>
+    <dialog id="alert-dialog">
+        <div style="height: 100%;">
+            <li style="position: relative; list-style-type: none; font-size: 17px; font-weight: 700;">Alert!</li>
+            <li id="dlg-text">Salon services are required!</li>
+            <div style="position: relative; margin-top: 20px; align-items: end; justify-content: end; display: flex;">
+                <li id="dialog-yes-btn" onclick="closeDlg()">OK</li>
+            </div>
+        </div>
+    </dialog>
+    <script src="js/index.js"></script>
+    <script>
+        let userId = "";
+        let category = "";
+        let numOfSvc = 0;
+        let db = firebase.firestore();
+        let svcName = localStorage.getItem("svc_name");
+        let dlgText = document.getElementById('dlg-text');
+        let alertDlg = document.getElementById('alert-dialog');
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                userId = user.uid;
+                getServiceInfo(userId);
+            }
+        });
+
+        function getServiceInfo(uid) {
+            db.collection("BHub").doc(uid).collection("Full Menu Services").doc(svcName).get().then((it) => {
+
+                if (it.data() != null) {
+
+                    category = it.data().category;
+                    console.log(category);
+                    if (category == "Body Hair") {
+                        document.getElementById('body-hair').checked = true;
+                    } else if (category == "Beard") {
+                        document.getElementById('beard').checked = true;
+                    } else if (category == "Hands & Feet") {
+                        document.getElementById('hands-feet').checked = true;
+                    } else if (category == "Hair") {
+                        document.getElementById('hair').checked = true;
+                    } else if (category == "Face Care") {
+                        document.getElementById('face').checked = true;
+                    } else if (category == "Massage") {
+                        document.getElementById('massage').checked = true;
+                    }
+                    document.getElementById('service-holder').style.display = "block";
+                    document.getElementById('svc-tool-tip').innerHTML = `${category} full menu*`;
+                    document.getElementById('input-svc-name').value = it.data().name;
+                    document.getElementById('input-svc-period').value = it.data().period;
+                    document.getElementById('input-svc-price').value = it.data().price;
+
+                    console.log(it.data());
+                }
+            });
+        }
+
+        const deleteItem = () => {
+            db.collection("BHub").doc(userId)
+            .collection("Full Menu Services").doc(svcName).delete().then((d) => {
+                let = message = "Service deleted successfully";
+                dlgText.innerHTML = message;
+                alertDlg.showModal();
+            });
+        }
+
+        document.getElementById('dialog-yes-btn').addEventListener('click', (e) => {
+            close();
+        });
+
+        const saveItem = () => {
+            let prodName = document.getElementById('input-svc-name').value;
+            let prodPrice = document.getElementById('input-svc-price').value;
+            let prodDesc = document.getElementById('input-svc-period').value;
+
+            if (prodName == "" || prodPrice == "" || prodDesc == "") {
+                var message = "Fill all required fields";
+                dlgText.innerHTML = message;
+                alertDlg.showModal();
+                return;
+            }
+
+            var map = {
+                category: category,
+                price: prodPrice,
+                period: prodDesc,
+                name: prodName,
+                userID: userId
+            }
+            
+            db.collection("BHub").doc(userId).collection("Full Menu Services").doc(svcName).set(map).then(function (e) {
+                if (category == "Body Hair") {
+                    var map = {
+                        "bodyHair": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                } else if (category == "Beard") {
+                    var map = {
+                        "beard": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                } else if (category == "Hands & Feet") {
+                    var map = {
+                        "handsFeet": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                } else if (category == "Hair") {
+                    var map = {
+                        "hair": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                } else if (category == "Face Care") {
+                    var map = {
+                        "faceCare": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                } else if (category == "Massage") {
+                    var map = {
+                        "massage": category
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((c) => {
+                        var message = "Service saved successfully";
+                        dlgText.innerHTML = message;
+                        alertDlg.showModal();
+                    });
+                }
+            });
+        }
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            close();
+        });
+
+        document.getElementById('body-hair').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Body Hair";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+
+        document.getElementById('beard').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Beard";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+
+        document.getElementById('hands-feet').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Hands & Feet";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+
+        document.getElementById('hair').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Hair";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+
+        document.getElementById('face').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Face Care";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+
+        document.getElementById('massage').addEventListener('change', function () {
+            if (this.checked) {
+                numOfSvc++;
+                category = "Massage";
+                document.getElementById('service-holder').style.display = "block";
+                document.getElementById('svc-tool-tip').innerHTML = `${category} popular services*`;
+            }
+        });
+    </script>
+</body>
+
+</html>

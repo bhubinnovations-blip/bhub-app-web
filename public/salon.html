@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(7px); -webkit-filter: blur(7px);" src="images/b_hub_logo.png" />
+    </div>
+    <div
+        style="width: 100%; height: 100%; position: fixed; background-image: linear-gradient(to bottom, #000000bb, black);">
+    </div>
+    <div style="position: relative; width: 100%; margin-top: 8rem; overflow: hidden; overflow-y: scroll; margin-bottom: 40px;">
+        <div style="position: relative; margin-left: 10px; margin-right: 10px; display: grid; grid-template-columns: repeat(2, 1fr);">
+            <div style="height: 150px; font-weight: bold; font-size: 20px; margin-right: 10px; color: white; background-color: rgb(168, 41, 3); border-radius: 4px;">
+                <span style="position: relative; top: 27px; left: 10px; font-size: 15px;">Total Clients</span>
+                <p id="total-lients">0</p>
+                <span id="total-client-perc">Loading ...</span>
+            </div>
+            <div style="height: 150px; font-weight: bold; font-size: 20px; margin-left: 10px; color: white; background-color: rgb(8, 129, 209); border-radius: 4px;">
+                <span style="position: relative; top: 27px; left: 10px; font-size: 15px;">Total Earnigs</span>
+                <span style="position: relative; top: 37px; left: 10px;">UGX<strong id="total-aerns">0.00</strong></span>
+                <span id="total-aerns-per">Loading ...</span>
+            </div>
+        </div>
+        <div style="width: 100%; height: 1px; position: relative; margin-top: 30px; background-color: darkgrey;"></div>
+        <span style="position: relative; display: block; top: 30px; left: 20px; font-size: 15px; color: rgb(199, 196, 196);">Earnings by category</span>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Body Hair</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Beard</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Hands & Feet</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Hair</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong id="hair-price" style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Face Care</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Massage</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong style="color: gold;">0.00</strong></p>
+        <p style="position: relative; top: 30px; margin-left: 20px; color: white;">Other</p>
+        <p style="position: relative; top: 17px; margin-left: 20px; font-size: 20px; color: white;">UGX<strong id="other-price" style="color: gold;">0.00</strong></p>
+        <div style="position: relative; width: 100%; margin-top: 100px; padding-top: 30px; background-color: rgb(19, 19, 19)">
+            <li style="position: relative; margin-top: 40px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Links of interest</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAbout()">About us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAPrivay()">Privacy Policy</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openTerms()">Terms & Conditions</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAContact()">Contact us</li>
+            <li style="position: relative; margin-top: 70px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Follow us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Facebook</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Twitter</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Instagram</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openLinkedIn()">Linked In</li>
+            <div style="width: 100%; position: relative; margin-top: 30px; display: flex; align-items: center; justify-content: center;">
+                <img style="width: 150px; height: 50px;" src="images/App-store-Icon.png" />
+                <img style="width: 150px; height: 50px;" src="images/Play-store-Icon.png" />
+            </div>
+        </div>
+        <div id="blank-tile">
+
+        </div>
+    </div>
+    <div style="width: 100%; position: fixed; top: 0; background-color: black;">
+        <h2
+            style="position: relative; color: white; font-family: 'Lexend', sans-serif; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Dashboard</h2>
+        <p
+            style="position: relative; margin-top: 20px; margin-left: 20px; margin-right: 50px; font-size: 15px; color: white;">
+            All sales being made </p>
+    </div>
+    <div class="fav__page">
+        <h2
+            style="position: relative; color: white; top: 30px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Favorites</h2>
+        <p
+            style="position: relative; margin-top: 70px; margin-left: 20px; margin-right: 50px; text-align: center; font-size: 15px; color: white;">
+            All your favorites will show up here </p>
+
+        <p
+            style="position: relative; margin-top: 20px; margin-left: 20px; margin-right: 20px; text-align: center; font-weight: 700; font-size: 15px; color: rgb(94, 92, 92);">
+            No favorites for now</p>
+    </div>
+    <div class="book__page">
+        <h2
+            style="position: relative; color: white; top: 30px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            My Orders</h2>
+        <p id="all-you-fav-txt">
+            All your orders will show up here </p>
+
+        <p id="no-fav-txt">
+            No bookings for now</p>
+        <div id="product-list-view" style="margin-top: 70px;"></div>
+    </div>
+    <div class="prof__page">
+        <h2
+            style="position: relative; color: white; top: 30px; margin-left: 20px; margin-right: 47px; font-size: 24px;">
+            Profile</h2>
+
+        <div style="position: relative; margin-top: 70px; margin-left: 50px; margin-right: 40px;">
+            <img id="img-salon"
+                src="images/b_hub_logo.png" />
+            <span
+                id="salon-prof-name">
+                Loading ...</span>
+            <p
+                style="position: absolute; top: 24px; left: 8rem; font-weight: 700; font-size: 15px; color: rgb(85, 84, 84);">
+                BHub-001</p>
+            <p id="wallet">
+                Loading ...</p>
+        </div>
+        <input type="file" id="input-img-url" />
+        <div style="position: relative; margin-top: 20px; align-items: center; justify-content: center; display: flex;">
+            <input type="button" id="edit-prof-btn" value="EDIT PROFILE" />
+            <input type="button" id="pro-svc-btn" value="SERVICES" />
+        </div>
+        <div
+            style=" width: 100%; height: 1px; position: relative; margin-top: 30px; background-color: rgb(56, 56, 56);">
+        </div>
+        <div id="_beauty">
+            <i class="material-icons prof__icon">person</i>
+            <span style="margin-left: 2rem; font-weight: lighter; font-size: 19px; color: rgb(255, 255, 255);">
+                Beauticians</span>
+            <i class="material-icons" style="position: absolute; right: 0; color: darkgrey;">keyboard_arrow_right</i>
+        </div>
+        
+        <div id="_history">
+            <i class="material-icons prof__icon">calendar_month</i>
+            <span style="margin-left: 2rem; font-weight: lighter; font-size: 19px; color: rgb(255, 255, 255);">
+                Order History</span>
+        </div>
+        <div id="_wallet">
+            <i class="material-icons prof__icon">account_balance_wallet</i>
+            <span style="margin-left: 2rem; font-weight: lighter; font-size: 19px; color: rgb(255, 255, 255);">
+                My Wallet</span>
+        </div>
+        <div id="_notifications">
+            <i class="material-icons prof__icon">notifications_active</i>
+            <span style="margin-left: 2rem; font-weight: lighter; font-size: 19px; color: rgb(255, 255, 255);">
+                Notifications</span>
+        </div>
+        <div id="_support">
+            <i class="material-icons prof__icon">support_agent</i>
+            <span style="margin-left: 2rem; font-weight: lighter; font-size: 19px; color: rgb(255, 255, 255);">
+                Support</span>
+        </div>
+        <div
+            style=" width: 100%; height: 1px; position: relative; margin-top: 30px; background-color: rgb(56, 56, 56);">
+        </div>
+        <div id="_support">
+            <input type="radio" id="online" name="support" class="prof__icon" />
+            <label for="online" style="margin-left: 2rem; font-weight: 300; font-size: 19px; color: limegreen;">
+                Online</label>
+        </div>
+        <div id="_support">
+            <input type="radio" id="offline" name="support" class="prof__icon" checked />
+            <label for="offline" style="margin-left: 2rem; font-weight: 300; font-size: 19px; color: red;">
+                Offline</label>
+        </div>
+        <div
+            style="position: relative; margin-top: 50px; margin-left: 20px; margin-right: 20px; align-items: center; justify-content: center; display: flex;">
+            <span style="font-weight: bold; font-size: 19px; color: rgb(255, 255, 255);">
+                BHub</span>
+        </div>
+        <div
+            style="position: relative; margin-top: 5px; margin-left: 20px; margin-right: 20px; align-items: center; justify-content: center; display: flex;">
+            <span style="font-weight: lighter; font-size: 13px; color: rgb(255, 255, 255);">
+                ver 1.0.2024</span>
+        </div>
+        <span id="logout-btn">
+            Logout</span>
+        <div style="width: 100%; height: 200px; position: relative;"></div>
+    </div>
+    <dialog id="alert-dialog">
+        <div style="height: 100%;">
+            <li style="position: relative; list-style-type: none; font-size: 17px; font-weight: 700;">Alert!</li>
+            <li id="dlg-text">Are you sure you want to logout?</li>
+            <div style="position: relative; margin-top: 20px; align-items: end; justify-content: end; display: flex;">
+                <li id="dialog-no-btn" onclick="closeDlg()">NO</li>
+                <li id="dialog-yes-btn" onclick="logout()">YES</li>
+            </div>
+        </div>
+    </dialog>
+    <nav class="nav">
+        <a href="#" class="nav__link__home nav__link--active">
+            <i class="material-icons nav__icon">home</i>
+            <span class="nav__text" style="font-family: 'Lexend', sans-serif;">Salon</span>
+        </a>
+        <a href="#" class="nav__link__book">
+            <i class="material-icons nav__icon">calendar_month</i>
+            <span class="nav__text" style="font-family: 'Lexend', sans-serif;">Orders</span>
+        </a>
+        <a href="#" class="nav__link__prof">
+            <i class="material-icons nav__icon">person</i>
+            <span class="nav__text" style="font-family: 'Lexend', sans-serif;">Profile</span>
+        </a>
+    </nav>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/vendororders.js"></script>
+    <script src="js/salon.js"></script>
+</body>
+
+</html>

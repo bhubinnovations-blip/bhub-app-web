@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="width: 100%; position: absolute; top: 70px; overflow: scroll; overflow-y: hidden;">
+        <p
+            style="position: relative; margin-top: 20px; margin-left: 20px; margin-right: 20px; color: white; text-align: center;">
+            Amount to pay</p>
+        <p id="order-payment-amount">
+            Ugx 0.00</p>
+        <p id="rate-us"
+            style="position: relative; font-weight: 400; margin-top: 50px; margin-left: 20px; margin-right: 20px; color: #807f7f; text-align: center;">
+            Please rate us</p>
+        <div class="card" id="card">
+            <div data-userid="" class="ratings">
+                <span data-rating="5">&#9733;</span>
+                <span data-rating="4">&#9733;</span>
+                <span data-rating="3">&#9733;</span>
+                <span data-rating="2">&#9733;</span>
+                <span data-rating="1">&#9733;</span>
+            </div>
+        </div>
+        <div id="comment-holder" style="position: relative;  margin-top: 50px; margin-left: 20px; margin-right: 20px; display: flex;">
+            <input type="text" id="input-comment" placeholder="Pleas leave a comment ..." />
+        </div>
+        <!-- <div class="card">
+            <br />
+            <span onclick="gfg(1)" class="star">★
+            </span>
+            <span onclick="gfg(2)" class="star">★
+            </span>
+            <span onclick="gfg(3)" class="star">★
+            </span>
+            <span onclick="gfg(4)" class="star">★
+            </span>
+            <span onclick="gfg(5)" class="star">★
+            </span>
+        </div> -->
+    </div>
+    <div style="width: 100%; height: 70px; background-color: rgb(0, 0, 0); position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <h2 id="bhub-title"
+            style="display: inline-block; color: white; margin-top: 24px; margin-left: 90px; margin-right: 47px; font-weight: 200; font-size: 19px;">
+            Payments</h2>
+    </div>
+    <input type="submit" value="THANK YOU" id="btn-check-out" />
+    <script src="js/index.js"></script>
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDocs, collection, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let userId = "";
+        let subTotal = "";
+        let vendorID = localStorage.getItem("salon_id");
+        let salonName = localStorage.getItem("salon_name");
+        let rateUser = localStorage.getItem("rate_user");
+        let alertDlg = document.getElementById('alert-dialog');
+        let clientId = localStorage.getItem("client_id");
+
+        if(rateUser != "" && rateUser === "no") {
+            document.getElementById("rate-us").style.display = "none";
+            document.getElementById("card").style.display = "none";
+            document.getElementById("comment-holder").style.display = "none";
+        }
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                if(rateUser != "" && rateUser === "no" && clientId != "") {
+                    userId = clientId;
+                    loadOrderPricing(userId, vendorID);
+                } else {
+                    userId = user.uid;
+                    loadOrderPricing(userId, vendorID);
+                }
+            }
+        });
+
+        async function loadOrderPricing(cUser, cVendor) {
+            console.log(cUser);
+            let count = 0;
+            var totalPrice = 0;
+            var allDocData;
+            const querySnapshot = await getDocs(collection(db, "BHub", cUser, "Booking"));
+            querySnapshot.forEach((doc) => {
+                var vUid = doc.data().vendorID;
+                if (cVendor == vUid) {
+                    count++;
+                    totalPrice += parseInt(doc.data().price);
+                    subTotal = parseInt(totalPrice);
+                    console.log(count);
+
+                }
+            });
+            document.getElementById('order-payment-amount').innerHTML = `Ugx ${parseInt(subTotal).toLocaleString()}`;
+        }
+
+        document.getElementById('btn-check-out').addEventListener('click', (evn) => {
+            if(rateUser != "" && rateUser === "no" && clientId != "") {
+                close();
+                return;
+            }
+            var db = firebase.firestore();
+            let comment = document.getElementById('input-comment').value;
+            if (rating != "0") {
+                var map = {
+                    rating: rating,
+                    comment: comment
+                }
+                db.collection("BHub").doc(vendorID).update(map).then(function () {
+                    var map = {
+                        order: "completed"
+                    }
+
+                    db.collection("New Orders").doc(userId).update(map).then(function (e) {
+                        var newDb = firebase.firestore();
+                        newDb.collection("BHub").doc(userId).collection("Booking").get().then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                var id = doc.id;
+                                var delDb = firebase.firestore();
+                                delDb.collection("BHub").doc(userId).collection("Booking")
+                                    .doc(id).delete().then((e) => {
+                                        close();
+                                    });
+                            });
+                        });
+                    });
+                });
+            } else {
+                db.collection("BHub").doc(vendorID).update(map).then(function () {
+                    var map = {
+                        order: "completed"
+                    }
+
+                    db.collection("New Orders").doc(userId).update(map).then(function (e) {
+                        var newDb = firebase.firestore();
+                        newDb.collection("BHub").doc(userId).collection("Booking").get().then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                var id = doc.id;
+                                var delDb = firebase.firestore();
+                                delDb.collection("BHub").doc(userId).collection("Booking")
+                                    .doc(id).delete().then((e) => {
+                                        clearInterval(timer);
+                                        close();
+                                    });
+                            });
+                        });
+                    });
+                });
+            }
+        });
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            close();
+        });
+    </script>
+</body>
+
+</html>

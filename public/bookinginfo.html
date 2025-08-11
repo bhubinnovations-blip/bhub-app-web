@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(7px); -webkit-filter: blur(7px);" src="images/b_hub_logo.png" />
+    </div>
+    <div
+        style="width: 100%; height: 100%; position: fixed; background-image: linear-gradient(to bottom, #000000cc, black);">
+    </div>
+    <form>
+        <div style="width: 100%; overflow: hidden; overflow-y: scroll;">
+            <h2
+                style="position: relative; color: white; top: 60px; margin-left: 20px; margin-right: 47px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 24px;">
+                Your booking info / Profile</h2>
+            <p
+                style="position: relative; margin-top: 80px; margin-left: 20px; margin-right: 50px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-size: 15px; color: white;">
+                This information helps us verify it's really you and/or to recognize where exactly to deliver your
+                service
+            </p>
+            <p
+                style="position: relative; margin-top: 30px; margin-left: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; font-size: 15px; color: rgb(196, 194, 194);">
+                Enter your valid details</p>
+            <div style="position: relative; display: flex;  margin-top: 10px; margin-left: 20px; margin-right: 20px;">
+                <input type="text" placeholder="First name here ..." required id="input-first-name" />
+            </div>
+            <div style="position: relative; display: flex;  margin-top: 70px; margin-left: 20px; margin-right: 20px;">
+                <input type="text" placeholder="Last name here ..." required id="input-last-name" />
+            </div>
+            <div style="position: relative; display: flex;  margin-top:70px; margin-left: 20px; margin-right: 20px;">
+                <input type="number" placeholder="Phone number here ..." required id="input-phone-no" />
+            </div>
+            <div style="position: relative; display: flex;  margin-top:70px; margin-left: 20px; margin-right: 20px;">
+                <input type="text" placeholder="Location here ..." required id="input-area" />
+            </div>
+            <p
+                style="position: relative; margin-top: 76px; margin-left: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; font-weight: 700; font-size: 15px; color: rgb(196, 194, 194);">
+                Profile picture (optional)</p>
+            <div
+                style="width: 100%; position: relative; margin-top: 20px; align-items: center; justify-content: center; display: flex;">
+                <img id="prof-pic-img"
+                    src="images/b_hub_logo.png" />
+            </div>
+            <input type="file" id="input-img-url" />
+            <div style="position: relative; display: flex;  margin-top: 30px; margin-left: 60px; margin-right: 60px;">
+                <span id="sel-img-btn">SELECT IMAGE</span>
+            </div>
+            <div style="position: relative;  margin-top: 50px; margin-left: 20px; margin-right: 20px;">
+                <button type="submit" id="submit-btn" style="border: none; outline: none;">Submit</span>
+            </div>
+            <div style="width: 100%; position: relative; height: 100px;"></div>
+        </div>
+    </form>
+    <div style="width: 100%; height: 60px; background-color: black; position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <span style="position: absolute; top: 25px; right: 20px; color: white; cursor: pointer;">PRIVACY</span>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+        let userId = "";
+        let db = firebase.firestore();
+        let form = document.querySelector("form");
+        let selectedImgUri;
+        let imgdownloadUrl;
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                userId = user.uid;
+                getUserInfo(userId)
+            }
+        });
+
+        $('#sel-img-btn').click(function () {
+            $('#input-img-url').trigger('click');
+        });
+
+        $("#input-img-url").on("change", function (event) {
+            if (!(/\.(png|jpg|jpeg)$/i).test(event.target.files[0].name)) {
+                window.alert('File not suppoted, upload png, jpg or jpeg files only!');
+                return;
+            }
+            selectedImgUri = event.target.files[0];
+            let fileName = selectedImgUri.name;
+            firebase.auth().onAuthStateChanged(function (user) {
+                var userId = user.uid;
+                let storageRef = firebase.storage().ref("BHub/" + userId + fileName);
+                let uploadTask = storageRef.put(selectedImgUri);
+                uploadTask.on("state_changed", (snapshot) => {
+                    console.log(snapshot);
+                    percentageVal = Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    console.log(percentageVal);
+                    console.log(userId);
+                }, (error) => {
+                    console.log("Error is: " + error.message);
+                }, () => {
+                    uploadTask.snapshot.ref.getDownloadURL().then((url) => {
+                        console.log("ImageLink: " + url);
+                        imgdownloadUrl = url;
+                        var map = {
+                            profilePic: imgdownloadUrl
+                        }
+                        db.collection("BHub").doc(userId).update(map).then(function (e) {
+                            document.getElementById('prof-pic-img').src = url;
+                        });
+                    });
+                });
+            });
+        });
+
+        form.addEventListener(
+            "submit",
+            (event) => {
+                var fName = document.getElementById('input-first-name').value;
+                var lName = document.getElementById('input-last-name').value;
+                var phoneNumber = document.getElementById('input-phone-no').value;
+                var deliverTo = document.getElementById('input-area').value;
+
+                if (fName != "" && lName != "" && phoneNumber != "" && deliverTo != "") {
+                    var map = {
+                        fName: fName,
+                        lName: lName,
+                        name: fName + " " + lName,
+                        phoneNumber: phoneNumber,
+                        deliverTo: deliverTo
+                    }
+                    db.collection("BHub").doc(userId).update(map).then((it) => {
+                        window.close()
+                        window.open("index.html");
+                    });
+                }
+                event.preventDefault();
+            },
+            false,
+        );
+
+        function getUserInfo(uid) {
+            db.collection("BHub").doc(userId).get().then(function (it) {
+                if (it.data() != null) {
+                    if (it.data().name != null) {
+                        document.getElementById('input-first-name').value = it.data().fName;
+                        document.getElementById('input-last-name').value = it.data().lName;
+                        document.getElementById('input-phone-no').value = it.data().phoneNumber;
+                    }
+                    if (it.data().deliverTo != null) {
+                        document.getElementById('input-area').value = it.data().deliverTo;
+                    }
+                    if (it.data().profilePic != null) {
+                        document.getElementById('prof-pic-img').src = it.data().profilePic;
+                    }
+                }
+            });
+        }
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            window.close();
+        });
+
+        document.getElementById('already-btn').addEventListener('click', (e) => {
+            window.open("login.html");
+        });
+
+        function showPassword() {
+            var x = document.getElementById("input-pass");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
+</body>
+
+</html>

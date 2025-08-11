@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="width: 100%; position: absolute; top: 70px; overflow: scroll; overflow-y: hidden;">
+        <div id="item-bhub">
+            <img id="img-poster" style="border-radius: 0px;" class="img-poster" src="images/b_hub_logo.png" />
+            <div id="name-fav-box" class="name-fav-box">
+                <span id="salon-name">Loading ...</span>
+                <div id="favo"><i class="material-symbols-outlined">favorite</i></div>
+            </div>
+            <div id="location-bx">
+                <i class="fa fa-map-marker" id="location-icon"></i>
+                <span id="salon-place">Loading ...</span>
+                <li style="position: absolute; font-size: 22px; color: red; right: 20px;"
+                    class="material-symbols-outlined">pin_drop</li>
+            </div>
+            <div id="name-rating-box">
+                <i class="fa fa-star" id="rating-star"></i>
+                <span id="rating-number">0.0</span>
+                <span id="reviews">0 reviews</span>
+            </div>
+            <div id="item-row-line"></div>
+            <!-- popular -->
+            <div id="view-more-box" class="view-more-box">
+                <span
+                    style="width: 100%; margin-left: 20px; margin-right: 20px; color: white; font-size: 18px; text-align: center;">Our
+                    Popular Services</span>
+            </div>
+            <div id="popular-list-view"
+                style="position: relative; margin-top: 30px; margin-left: 20px; margin-right: 20px;">
+
+            </div>
+            <div id="item-row-line"></div>
+            <!-- full -->
+            <div id="view-more-box" class="view-more-box">
+                <span
+                    style="width: 100%; margin-left: 20px; margin-right: 20px; color: white; font-size: 18px; text-align: center;">Full
+                    Menu</span>
+            </div>
+            <div id="full-list-view"
+                style="position: relative; margin-top: 30px; margin-left: 20px; margin-right: 20px;">
+
+            </div>
+            <div id="item-row-line"></div>
+            <!-- products -->
+            <div id="view-more-box" class="view-more-box">
+                <span
+                    style="width: 100%; margin-left: 20px; margin-right: 20px; color: white; font-size: 18px; text-align: center;">Products</span>
+            </div>
+            <div id="product-list-view"
+                style="position: relative; margin-top: 30px; margin-left: 20px; margin-right: 20px;">
+
+            </div>
+        </div>
+        <div style="position: relative; width: 100%; margin-top: 100px; padding-top: 30px; background-color: rgb(19, 19, 19);">
+            <li style="position: relative; margin-top: 40px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Links of interest</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAbout()">About us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAPrivacy()">Privacy Policy</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openTerms()">Terms & Conditions</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAContact()">Contact us</li>
+            <li style="position: relative; margin-top: 70px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Follow us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Facebook</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Twitter</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Instagram</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openLinkedIn()">Linked In</li>
+            <div style="width: 100%; position: relative; margin-top: 30px; display: flex; align-items: center; justify-content: center;">
+                <img style="width: 150px; height: 50px;" src="images/App-store-Icon.png" />
+                <img style="width: 150px; height: 50px;" src="images/Play-store-Icon.png" />
+            </div>
+        </div>
+        <div style="width: 100%; height: 100px; position: relative; background-color: rgb(19, 19, 19);"></div>
+    </div>
+    <div style="width: 100%; height: 70px; background-color: rgb(0, 0, 0); position: fixed; top: 0%;">
+        <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+        <h2 id="bhub-title"
+            style="display: inline-block; color: white; margin-top: 24px; margin-left: 90px; margin-right: 47px; font-weight: 200; font-size: 19px;">
+            Loading ...</h2>
+    </div>
+    <div id="btn-continue">
+        <span>Select date and time</span>
+        <span id="num-of-items">0</span>
+    </div>
+
+    <script src="js/index.js"></script>
+    <script>
+        let ids = 0;
+        let myId = "";
+        let numOfItems = 0;
+        let userId = localStorage.getItem("salon_id");
+        let db = firebase.firestore();
+        let btnContinue = document.getElementById('btn-continue');
+        let quantity = document.getElementById('num-of-items');
+
+        function openAbout() {
+            open("aboutus.html");
+        }
+
+        function openAPrivacy() {
+            open("privacy.html");
+        }
+
+        function openTerms() {
+            open("terms.html");
+        }
+
+        function openAContact() {
+            open("contactus.html");
+        }
+
+        function openRegister() {
+            open("landing.html");
+        }
+
+        function openLinkedIn() {
+            open("https://www.linkedin.com/company/bhubapp/");
+        }
+
+        console.log(userId);
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                myId = user.uid;
+                console.log(myId);
+                checkOrder(myId);
+            }
+        });
+
+        if (userId) {
+
+            getUserInfo(userId);
+        }
+
+        function getUserInfo(uid) {
+            db.collection("BHub").doc(uid).get().then((it) => {
+                if (it.data() != null) {
+                    document.getElementById('img-poster').src = it.data().poster;
+                    document.getElementById('bhub-title').innerHTML = it.data().name;
+                    document.getElementById('salon-name').innerHTML = it.data().name;
+                    document.getElementById('salon-place').innerHTML = it.data().location;
+                    getPopualrServices(uid);
+                    getFullMenuServices(uid);
+                    getProducts(uid)
+
+                    document.getElementById('name-fav-box').addEventListener('click', (event) => {
+                        let position = event.target;
+                        if (position.classList.contains("material-symbols-outlined")) {
+                            position.classList.add("material-icons");
+                        } else if (position.classList.contains("material-icons")) {
+                            position.classList.remove("material-icons");
+                        }
+                    });
+                }
+            });
+        }
+
+        function checkOrder(uid) {
+            db.collection("BHub").doc(uid).collection("Booking").get().then(function (snapshot) {
+                numOfItems = 0;
+                snapshot.forEach((doc) => {
+                    let vendorId = doc.data().vendorID;
+                    if(userId === vendorId) {
+                        numOfItems++;
+                        quantity.innerHTML = numOfItems;
+                        btnContinue.style.display = "flex";
+                    }
+                });
+            });
+
+            db.collection("New Orders").doc(uid).get().then(function (userData) {
+                if (userData.data() != null && numOfItems > 0) {
+                    var order = userData.data().order;
+                    if (order != "completed" || order === "preparing" || order === "received"  || order === "pending" || order != "cancelled") {
+                        document.getElementById('btn-continue').style.display = "flex";
+                    }
+                }
+            });
+        }
+
+        function getPopualrServices(uid) {
+            let popSvcItem = "";
+
+            db.collection("BHub").doc(uid).collection("Popular Services").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    ids++;
+                    popSvcItem += `
+                    <div id="pop-list-item-row" class="${doc.data().name}">
+                    <span style="color: white; font-weight: 300; font-size: 13px;">${doc.data().name}</span>
+                    <span style="color: darkgrey; position: absolute; top: 22px; left: 0; font-size: 13px;">${doc.data().period}</span>
+                    <span style="color: white; position: absolute; top: 3px; right: 2.5rem; font-weight: 100; font-size: 13px;">Ugx ${parseInt(doc.data().price).toLocaleString()}</span>
+                    <span style="color: gold; position: absolute; top: 22px; right: 2.5rem; font-weight: 100; font-size: 13px;">${doc.data().offer}</span>
+                    <span class="material-icons" data-id="${doc.data().name}" style="position: absolute; top: 8px; right: 0; color: gold;">add_circle</span>
+                    </div>
+                    `;
+                });
+                document.getElementById('popular-list-view').innerHTML = popSvcItem;
+            });
+
+            document.getElementById('popular-list-view').addEventListener('click', (e) => {
+                let position = e.target;
+                if (position.classList.contains("material-icons") && position.innerHTML === "add_circle") {
+                    position.innerHTML = "check_circle";
+                    numOfItems = numOfItems + 1;
+                    let item = position.parentElement.classList.value;
+                    console.log(item);
+                    db.collection('BHub').doc(userId).collection('Popular Services').doc(item).get().then((it) => {
+                        if (it.data() != null) {
+                            let name = it.data().name;
+                            let period = it.data().period;
+                            let price = it.data().price;
+
+                            let map = {
+                                name: name,
+                                period: period,
+                                price: price,
+                                vendorID: userId,
+                            }
+                            db.collection('BHub').doc(myId).collection('Booking').doc(name).set(map);
+                        }
+                    });
+                } else if (position.classList.contains("material-icons") && position.innerHTML === "check_circle") {
+                    position.innerHTML = "add_circle";
+                    numOfItems = numOfItems - 1
+                    let item = position.parentElement.classList.value;
+                    db.collection('BHub').doc(myId).collection('Booking').doc(item).delete();
+                }
+                if (numOfItems > 0) {
+                    quantity.innerHTML = numOfItems;
+                    btnContinue.style.display = "flex";
+                } else {
+                    btnContinue.style.display = "none";
+                }
+                console.log(numOfItems);
+            });
+        }
+
+        btnContinue.addEventListener('click', (e) => {
+            let salonName = document.getElementById('salon-name').innerHTML;
+            localStorage.setItem("salon_name", salonName);
+            db.collection("New Orders").doc(myId).get().then(function (it) {
+                if(it.data() != null) {
+                    let order = it.data().order;
+                    if(order !== "pending" && order === "received") {
+                        open("orderstatus.html", "_self");
+                    } else {
+                        open("calendar.html", "_self");
+                    }
+                } else {
+                    open("calendar.html", "_self");
+                }
+            });
+        });
+
+        function getFullMenuServices(uid) {
+            let FullSvcItem = "";
+            db.collection("BHub").doc(uid).collection("Full Menu Services").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    FullSvcItem += `
+                    <div class="${doc.data().name}" style="width: 100%; height: 40px; position: relative; margin-top: 20px;">
+                    <span style="color: white; font-weight: 300; font-size: 13px;">${doc.data().name}</span>
+                    <span style="color: darkgrey; position: absolute; top: 22px; left: 0; font-size: 13px;">${doc.data().period}</span>
+                    <span style="color: white; position: absolute; top: 3px; right: 2.5rem; font-weight: 100; font-size: 13px;">Ugx ${parseInt(doc.data().price).toLocaleString()}</span>
+                    <span class="material-icons" style="position: absolute; top: 8px; right: 0; color: gold;">add_circle</span>
+                    </div>
+                    `;
+                });
+                document.getElementById('full-list-view').innerHTML = FullSvcItem;
+            });
+
+            document.getElementById('full-list-view').addEventListener('click', (e) => {
+                let position = e.target;
+                if (position.classList.contains("material-icons") && position.innerHTML === "add_circle") {
+                    position.innerHTML = "check_circle";
+                    numOfItems = numOfItems + 1;
+                    let item = position.parentElement.classList.value;
+                    console.log(item);
+                    db.collection('BHub').doc(userId).collection('Full Menu Services').doc(item).get().then((it) => {
+                        if (it.data() != null) {
+                            let name = it.data().name;
+                            let period = it.data().period;
+                            let price = it.data().price;
+
+                            let map = {
+                                name: name,
+                                period: period,
+                                price: price,
+                                vendorID: userId
+                            }
+                            db.collection('BHub').doc(myId).collection('Booking').doc(name).set(map);
+                        }
+                    });
+                } else if (position.classList.contains("material-icons") && position.innerHTML === "check_circle") {
+                    position.innerHTML = "add_circle";
+                    numOfItems = numOfItems - 1
+                    let item = position.parentElement.classList.value;
+                    db.collection('BHub').doc(myId).collection('Booking').doc(item).delete();
+                }
+                if (numOfItems > 0) {
+                    quantity.innerHTML = numOfItems;
+                    btnContinue.style.display = "flex";
+                } else {
+                    btnContinue.style.display = "none";
+                }
+                console.log(numOfItems);
+            });
+        }
+
+        function getProducts(uid) {
+            let prodcutItem = "";
+            db.collection("BHub").doc(uid).collection("Products").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    prodcutItem += `
+                    <div class="${doc.data().name}" style="width: 100%; height: 90px; position: relative; margin-top: 20px;">
+                    <img style="width: 90px; height: 100%; position: absolute; left: 0;" src="${doc.data().poster}" />
+                    <span style="position: absolute; top: 5px; left: 110px; color: white; font-weight: 300;">${doc.data().name}</span>
+                    <span style="color: white; position: absolute; top: 35px; left: 110px; font-weight: 100; font-size: 15px;">${doc.data().qty}</span>
+                    <span style="color: gold; position: absolute; top: 60px; left: 110px; font-weight: 100; font-size: 17px;">Ugx ${parseInt(doc.data().price).toLocaleString()}</span>
+                    <span class="material-icons" style="position: absolute; bottom: 15px; right: 0; color: gold;">add_circle</span>
+                    </div>
+                    `;
+                });
+                document.getElementById('product-list-view').innerHTML = prodcutItem;
+            });
+
+            document.getElementById('product-list-view').addEventListener('click', (e) => {
+                let position = e.target;
+                if (position.classList.contains("material-icons") && position.innerHTML === "add_circle") {
+                    position.innerHTML = "check_circle";
+                    numOfItems = numOfItems + 1;
+                    let item = position.parentElement.classList.value;
+                    console.log(item);
+                    db.collection('BHub').doc(userId).collection('Products').doc(item).get().then((it) => {
+                        if (it.data() != null) {
+                            let name = it.data().name;
+                            let qty = it.data().qty;
+                            let price = it.data().price;
+                            let poster = it.data().poster;
+
+                            let map = {
+                                name: name,
+                                qty: qty,
+                                price: price,
+                                poster: poster,
+                                vendorID: userId
+                            }
+                            db.collection('BHub').doc(myId).collection('Booking').doc(name).set(map);
+                        }
+                    });
+                } else if (position.classList.contains("material-icons") && position.innerHTML === "check_circle") {
+                    position.innerHTML = "add_circle";
+                    numOfItems = numOfItems - 1
+                    let item = position.parentElement.classList.value;
+                    db.collection('BHub').doc(myId).collection('Booking').doc(item).delete();
+                }
+                if (numOfItems > 0) {
+                    quantity.innerHTML = numOfItems;
+                    btnContinue.style.display = "flex";
+                } else {
+                    btnContinue.style.display = "none";
+                }
+                console.log(numOfItems);
+            });
+        }
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            var salonOpt = localStorage.getItem("salon_opt");
+            if (salonOpt === "salon") {
+                open("salons.html", "_self");
+            } else if (salonOpt === "beauty") {
+                window.open("beauticians.html", "_self");
+            } else if (salonOpt === "gym") {
+                window.open("gyms.html", "_self");
+            } else if (salonOpt === "trainer") {
+                window.open("trainers.html", "_self");
+            } else {
+                window.open("welcome.html", "_self");
+            }
+        });
+    </script>
+</body>
+
+</html>

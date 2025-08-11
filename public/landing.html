@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(7px); -webkit-filter: blur(7px);" src="images/b_hub_logo.png" />
+    </div>
+    <div style="width: 100%; height: 100%; position: fixed; background-image: linear-gradient(to bottom, #000000bb, black);"></div>
+    <div style="width: 100%; overflow: hidden; overflow-y: scroll; margin-bottom: 40px;">
+        <h2 style="position: relative; color: white; top: 30px; margin-left: 20px; margin-right: 47px; font-size: 24px;">Welcome to BHub</h2>
+        <p style="position: relative; margin-top: 50px; margin-left: 20px; margin-right: 20px; font-size: 15px; color: white;">Keep creating or exploring beauty and fitness services  </p>
+        <p style="position: relative; margin-top: 20px; margin-left: 20px; margin-right: 20px; font-weight: 700; font-size: 15px; color: white;">Continue As</p>
+        <div id="user-tile">
+            <img style="position: absolute; width: 90px; height: 100%;" src="images/b_hub_logo.png" />
+            <p style="position: absolute; color: rgb(228, 224, 224); left: 7rem; font-size: 20px; font-weight: bold;">
+                Regular Client
+            </p>
+            <p style="position: absolute; bottom: 10px; left: 7rem; right: 5rem; font-size: 15px; color: white;">Get salon, beautician, gym or gym trainer.</p>
+        </div>
+        <div id="salon-tile" onclick="createSalon()">
+            <div style="position: absolute; width: 90px; height: 100%; align-items: center; justify-content: center; display: flex; background-color: black;">
+                <img style="width: 50px; rotate: -15deg;" src="images/salon2.png" />
+            </div>
+            <p style="position: absolute; color: white; left: 7rem; font-size: 20px; font-weight: bold;">
+                Salon & Spa
+            </p>
+            <p style="position: absolute; bottom: 10px; left: 7rem; right: 2rem; font-size: 15px; color: white;">Your salon is our opportunity to tell your customers what you offer.</p>
+        </div>
+        <div id="beauti-tile">
+            <div style="position: absolute; width: 90px; height: 100%; align-items: center; justify-content: center; display: flex; background-color: black;">
+                <img style="width: 55px;" src="images/beauty.png" />
+            </div>
+            <p style="position: absolute; color: white; left: 7rem; font-size: 20px; font-weight: bold;">
+                Beautician
+            </p>
+            <p style="position: absolute; bottom: 10px; left: 7rem; right: 2rem; font-size: 15px; color: white;">Tell BHub more about your business we are here for you!</p>
+        </div>
+        <div id="gym-tile">
+            <div style="position: absolute; width: 90px; height: 100%; align-items: center; justify-content: center; display: flex; background-color: black;">
+                <img style="width: 60px; rotate: -15deg;" src="images/gym.png" />
+            </div>
+            <p style="position: absolute; color: white; left: 7rem; font-size: 20px; font-weight: bold;">
+                GYM
+            </p>
+            <p style="position: absolute; bottom: 10px; left: 7rem; right: 2rem; font-size: 15px; color: white;">Gym will get someone do just that 'oh - and the best services too'.</p>
+        </div>
+        <div id="gym-trainer-tile">
+            <div style="position: absolute; width: 90px; height: 100%; align-items: center; justify-content: center; display: flex; background-color: black;">
+                <img style="width: 50px;" src="images/trainer.png" />
+            </div>
+            <p style="position: absolute; color: white; left: 7rem; font-size: 20px; font-weight: bold;">
+                GYM - Trainer
+            </p>
+            <p style="position: absolute; bottom: 10px; left: 7rem; right: 2rem; font-size: 15px; color: white;">Tell BHub more about your business we are here for you!</p>
+        </div>
+        <div style="position: relative; width: 100%; margin-top: 100px; padding-top: 30px; background-color: rgb(19, 19, 19)">
+            <li style="position: relative; margin-top: 40px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Links of interest</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAbout()">About us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAPrivay()">Privacy Policy</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openTerms()">Terms & Conditions</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openAContact()">Contact us</li>
+            <li style="position: relative; margin-top: 70px; margin-left: 20px; color: white; font-weight: 700; font-size: 20px; list-style-type: none;">Follow us</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Facebook</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Twitter</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;">Instagram</li>
+            <li style="position: relative; color: white; font-size: 15px; margin-top: 25px; padding-left: 20px; padding-right: 20px; cursor: pointer;" onclick="openLinkedIn()">Linked In</li>
+            <div style="width: 100%; position: relative; margin-top: 30px; display: flex; align-items: center; justify-content: center;">
+                <img style="width: 150px; height: 50px;" src="images/App-store-Icon.png" />
+                <img style="width: 150px; height: 50px;" src="images/Play-store-Icon.png" />
+            </div>
+        </div>
+        <div id="blank-tile" style="background-color: rgb(19, 19, 19);">
+            
+        </div>
+    </div>
+    <div style="width: 100%; height: 80px; position: fixed; background-color: black; bottom: 0%;">
+        <span id="continue-btn" style="left: 20px; right: 20px;">Exit</span>
+    </div>
+    <script src="js/index.js"></script>
+    <script>
+        function openAbout() {
+            open("aboutus.html");
+        }
+
+        function openAPrivacy() {
+            open("privacy.html");
+        }
+
+        function openTerms() {
+            open("terms.html");
+        }
+
+        function openAContact() {
+            open("contactus.html");
+        }
+
+        function openLinkedIn() {
+            open("https://www.linkedin.com/company/bhubapp/");
+        }
+
+        document.getElementById('continue-btn').addEventListener('click', (e) => {
+            window.close();
+        });
+
+        document.getElementById('user-tile').addEventListener('click', (e) => {
+            localStorage.setItem("bundle", "user");
+            window.open("login.html");
+        });
+
+        document.getElementById('beauti-tile').addEventListener('click', (e) => {
+            localStorage.setItem("bundle", "beauty");
+            window.open("login.html");
+        });
+
+        document.getElementById('gym-tile').addEventListener('click', (e) => {
+            localStorage.setItem("bundle", "gym");
+            window.open("login.html");
+        });
+
+        document.getElementById('gym-trainer-tile').addEventListener('click', (e) => {
+            localStorage.setItem("bundle", "trainer");
+            window.open("login.html");
+        });
+
+        function createSalon() {
+            localStorage.setItem("bundle", "salon");
+            window.open("login.html");
+        }
+    </script>
+</body>
+
+</html>

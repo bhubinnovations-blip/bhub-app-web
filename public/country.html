@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>B-Hub</title>
+    <meta name="viewport" content="width=device-width,  initial-scale=1.0">
+    <link rel="stylesheet" href="css/bhub.css" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.2.3/firebase-firestore.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="splash">
+        <img style="filter: blur(6px); -webkit-filter: blur(6px);" src="images/b_hub_logo.png" />
+        <h2 style="position: absolute; color: white; top: 50px; left: 20px; right: 40px; font-size: 24px;">
+            With BHub you can book a Salon, Spa, Beautician and Gym and Gym Trainer</h2>
+        <div
+            style="width: 100%; height: 340px; position: absolute; border-top-left-radius: 270px 150px; background-color: white; bottom: 0%;">
+            <span
+                style="position: absolute; top: 100px; left: 40px; right: 40px; text-align: center; font-size: 16px;">Now
+                you will never be more than a few taps away from your next treatment</span>
+            <span
+                style="position: absolute; top: 170px; left: 40px; right: 40px; text-align: center; font-weight: 500; font-size: 15px;">You're
+                in Kampala, UG.</span>
+            <span id="change-location-btn">Change location?</span>
+            <span id="continue-btn">Continue</span>
+        </div>
+
+    </div>
+    </div>
+
+    <span id="close-window-btn" class="material-symbols-outlined">arrow_back</span>
+    <script src="js/index.js"></script>
+    <script>
+        document.getElementById('continue-btn').addEventListener('click', (e) => {
+            window.open("sharelocation.html");
+        });
+
+        document.getElementById('change-location-btn').addEventListener('click', (e) => {
+            window.open("places.html");
+        });
+
+        document.getElementById('close-window-btn').addEventListener('click', (e) => {
+            window.close();
+        });
+    </script>
+</body>
+
+</html>
